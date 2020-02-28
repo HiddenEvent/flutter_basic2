@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter_basic2/src/saved.dart';
+import 'block/Block.dart';
 
 class RandomList extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _RandomListState(); // 한줄짜리 return을 갖는
-// 함수는 => 대체 가능
+  // 한줄짜리 return을 갖는 함수는 => 대체 가능
+  State<StatefulWidget> createState() => _RandomListState();
 }
 
 class _RandomListState extends State<RandomList> {
-  final List<WordPair> _suggestions = <WordPair>[]; //리스트 중복값 가능
-  final Set<WordPair> _saved = Set<WordPair>(); //Set은 리스트와 비슷함 중복값 불가능
+  //리스트 중복값 가능
+  final List<WordPair> _suggestions = <WordPair>[];
+
   @override
   Widget build(BuildContext context) {
     final randomWord = WordPair.random();
@@ -20,41 +22,51 @@ class _RandomListState extends State<RandomList> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.list),
-              onPressed: () { //화면 전환 부분!
+              onPressed: () {
+                //화면 전환 부분!
+                bloc.savedStream; // block 패턴 적용
+
                 //Navigator 오브젝트를 이용해서 다른 페이지로 이동
                 Navigator.of(context).push(
-                  //SavedList 페이지에 _saved변수를 파라미터로 넘겨주는 부분
-                  MaterialPageRoute(builder: (context)=>SavedList(saved:_saved))
-                );
+                    // 클릭하면 SavedList 페이지 호출
+                    MaterialPageRoute(builder: (context) => SavedList()));
               },
             )
           ],
         ),
         // ignore: missing_return
+        //데이터 가져오와서 앱 화면에 뿌려주기위해 호출
         body: _buildList());
   }
 
   Widget _buildList() {
-    return ListView.builder(itemBuilder: (context, index) {
-      //0,2,4,6,8 = 진짜 인덱스 를 말한다.
-      //1,3,5,7,9 = 선을 그릴때 사용함
-      if (index.isOdd) {
-        return Divider();
-      }
+    //스트림 빌더를 이용하여 데이터를 bloc 패턴으로 구성
+    return StreamBuilder<Set<WordPair>>(
+        stream: bloc.savedStream, //블록패턴 연결부.
+        builder: (context, snapshot) {// snapshot이 도착할때마다 페이지를 새로그림
+          return ListView.builder(itemBuilder: (context, index) {
+            //짝수 = 진짜 인덱스 를 말한다.
+            //홀수 = 선을 그릴때 사용함
+            if (index.isOdd) { // 짝수면 선을 그려넣음
+              return Divider();
+            }
 
-      var realIndex = index ~/ 2; // ~/ 몫을 구하는 연산자
+            var realIndex = index ~/ 2; // ~/ 몫을 구하는 연산자
+            print("리얼인덱스 값 $realIndex");
+            print( "sugestion 값 ${_suggestions.length}");
+            if (realIndex >= _suggestions.length) {
+              _suggestions.addAll(generateWordPairs().take(10));
+            }
 
-      if (realIndex >= _suggestions.length) {
-        _suggestions.addAll(generateWordPairs().take(10));
-      }
-
-      return _buildRow(_suggestions[realIndex]);
-    });
+            return _buildRow(snapshot.data, _suggestions[realIndex]);
+          });
+        });
     //ListView.Builder는 리스트 객체를 생성해서 가져와주는 함수
   }
 
-  Widget _buildRow(WordPair pair) {
-    final bool alreadySaved = _saved.contains(pair); // 단어가 있냐 없냐를 boolean으로 리턴
+  Widget _buildRow(Set<WordPair> saved, WordPair pair) {
+    // 단어가 있냐 없냐를 boolean으로 리턴 ( 하트 칠하기 )
+    final bool alreadySaved = saved == null ? false : saved.contains(pair);
 
     return ListTile(
       title: Text(
@@ -66,15 +78,8 @@ class _RandomListState extends State<RandomList> {
         color: Colors.pink,
       ),
       onTap: () {
-        setState(() {
-          // 실시간 반영이라고 생각하면된다.
-          if (alreadySaved)
-            _saved.remove(pair);
-          else
-            _saved.add(pair);
-
-          print(_saved);
-        });
+        // 하트 클릭시 해당 데이터 저장하는 기능 bloc 패턴으로 관리
+        bloc.addToOrRemoveFromSavedList(pair);
       },
     );
   }
