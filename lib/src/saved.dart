@@ -34,7 +34,7 @@ class _SavedListState extends State<SavedList> {
           return ListView.builder(
               itemCount: saved.length * 2,
               itemBuilder: (context, index) {
-                if (index.isOdd) return Divider();
+                if (index.isOdd) return Divider();//줄
                 var realIndex = index ~/ 2;
                 // ▼ set객체는 인덱스로 불러오는게 불가능하여  List로 캐스팅후 인덱스 값으로 호출
                 return _buildRow(saved.toList()[realIndex]);

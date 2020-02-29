@@ -8,13 +8,14 @@ class RandomList extends StatefulWidget {
   // 한줄짜리 return을 갖는 함수는 => 대체 가능
   State<StatefulWidget> createState() => _RandomListState();
 }
-
+//Scaffold,block Pattern,Navigator.of(context).push,StreamBuilder,
+// snapshot,StreamController<Set<WordPair>>.broadcast();
 class _RandomListState extends State<RandomList> {
   //리스트 중복값 가능
   final List<WordPair> _suggestions = <WordPair>[];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {//화면을 그려줌
     final randomWord = WordPair.random();
     return Scaffold(
         appBar: AppBar(

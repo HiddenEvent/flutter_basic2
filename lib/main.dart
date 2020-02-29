@@ -2,6 +2,7 @@ import 'package:flutter/material.dart'; //material 라이브러리 추가
 import 'package:english_words/english_words.dart'; //english_words 라이브러리 추가
 import 'package:flutter_basic2/src/random_list.dart';
 
+
 void main () => runApp(MyApp());
 
 class MyApp extends StatelessWidget{

@@ -9,7 +9,7 @@ class Bloc{
   final _savedController = StreamController<Set<WordPair>>.broadcast();
 
   get savedStream => _savedController.stream; // 값을 받아서 넣기만 하는 기능
-  
+
   // addCrrentSaved 호출하면 saved값을 보내줘라
   get addCrrentSaved => _savedController.sink.add(saved);
 
