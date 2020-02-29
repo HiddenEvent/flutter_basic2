@@ -8,6 +8,7 @@ class RandomList extends StatefulWidget {
   // 한줄짜리 return을 갖는 함수는 => 대체 가능
   State<StatefulWidget> createState() => _RandomListState();
 }
+
 //Scaffold,block Pattern,Navigator.of(context).push,StreamBuilder,
 // snapshot,StreamController<Set<WordPair>>.broadcast();
 class _RandomListState extends State<RandomList> {
@@ -15,7 +16,8 @@ class _RandomListState extends State<RandomList> {
   final List<WordPair> _suggestions = <WordPair>[];
 
   @override
-  Widget build(BuildContext context) {//화면을 그려줌
+  Widget build(BuildContext context) {
+    //화면을 그려줌
     final randomWord = WordPair.random();
     return Scaffold(
         appBar: AppBar(
@@ -23,6 +25,42 @@ class _RandomListState extends State<RandomList> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.list),
+              onPressed: () {
+                //화면 전환 부분!
+                bloc.savedStream; // block 패턴 적용
+
+                //Navigator 오브젝트를 이용해서 다른 페이지로 이동
+                Navigator.of(context).push(
+                    // 클릭하면 SavedList 페이지 호출
+                    MaterialPageRoute(builder: (context) => SavedList()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.account_balance),
+              onPressed: () {
+                //화면 전환 부분!
+                bloc.savedStream; // block 패턴 적용
+
+                //Navigator 오브젝트를 이용해서 다른 페이지로 이동
+                Navigator.of(context).push(
+                    // 클릭하면 SavedList 페이지 호출
+                    MaterialPageRoute(builder: (context) => SavedList()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.access_alarm),
+              onPressed: () {
+                //화면 전환 부분!
+                bloc.savedStream; // block 패턴 적용
+
+                //Navigator 오브젝트를 이용해서 다른 페이지로 이동
+                Navigator.of(context).push(
+                    // 클릭하면 SavedList 페이지 호출
+                    MaterialPageRoute(builder: (context) => SavedList()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.accessible),
               onPressed: () {
                 //화면 전환 부분!
                 bloc.savedStream; // block 패턴 적용
@@ -44,17 +82,19 @@ class _RandomListState extends State<RandomList> {
     //스트림 빌더를 이용하여 데이터를 bloc 패턴으로 구성
     return StreamBuilder<Set<WordPair>>(
         stream: bloc.savedStream, //블록패턴 연결부.
-        builder: (context, snapshot) {// snapshot이 도착할때마다 페이지를 새로그림
+        builder: (context, snapshot) {
+          // snapshot이 도착할때마다 페이지를 새로그림
           return ListView.builder(itemBuilder: (context, index) {
             //짝수 = 진짜 인덱스 를 말한다.
             //홀수 = 선을 그릴때 사용함
-            if (index.isOdd) { // 짝수면 선을 그려넣음
+            if (index.isOdd) {
+              // 짝수면 선을 그려넣음
               return Divider();
             }
 
             var realIndex = index ~/ 2; // ~/ 몫을 구하는 연산자
             print("리얼인덱스 값 $realIndex");
-            print( "sugestion 값 ${_suggestions.length}");
+            print("sugestion 값 ${_suggestions.length}");
             if (realIndex >= _suggestions.length) {
               _suggestions.addAll(generateWordPairs().take(10));
             }
