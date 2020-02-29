@@ -26,7 +26,7 @@ class _SavedListState extends State<SavedList> {
           if (snapshot.hasData)
             saved.addAll(snapshot.data);
           else
-            bloc.addCrrentSaved;
+            bloc.addCrrentSaved; //test
 
           //▼ ListView 스크롤 할때마다 리스트가 추가되는 부분
           // itemCount를 정해 주어야함. 안해주면 무제한으로 스크롤 할때 마다 동작함
