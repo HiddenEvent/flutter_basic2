@@ -8,7 +8,7 @@ void main () => runApp(MyApp());
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {// 플루터는 모든 컴포넌트를 위젯으로 보면된다.
-    //추가합니다
+    //추가합니다 / test
     return MaterialApp(
       home: RandomList()
     );
